@@ -4,7 +4,7 @@ Runtime security proxy for AI agents.
 
 ## Pipeline Status
 
-Fully integrated CI/CD pipeline — all systems operational.
+All systems operational — full end-to-end CI/CD pipeline.
 
 ## Stack
 
@@ -17,3 +17,5 @@ Fully integrated CI/CD pipeline — all systems operational.
 
 - /health — health check
 - /docs — API documentation
+
+## Final verification complete
