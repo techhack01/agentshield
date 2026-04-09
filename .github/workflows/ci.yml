@@ -107,3 +107,34 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+  notify:
+    name: Notify n8n
+    runs-on: ubuntu-latest
+    needs: build
+    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Notify n8n (success)
+        if: needs.build.result == 'success'
+        run: |
+          curl -sX POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event": "deploy_success",
+              "repo": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "author": "${{ github.actor }}",
+              "message": "'"$(echo '${{ github.event.head_commit.message }}' | head -1)"'"
+            }' || true
+
+      - name: Notify n8n (failure)
+        if: needs.build.result == 'failure'
+        run: |
+          curl -sX POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event": "deploy_failure",
+              "repo": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "author": "${{ github.actor }}"
+            }' || true
