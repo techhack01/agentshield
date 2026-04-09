@@ -4,18 +4,8 @@ Runtime security proxy for AI agents.
 
 ## Pipeline Status
 
-All systems operational — full end-to-end CI/CD pipeline.
+All systems operational.
 
-## Stack
+## Final end-to-end test
 
-- GitHub Actions (CI)
-- Terraform Cloud (IaC)
-- n8n Community Edition (notifications + monitoring)
-- Docker Desktop (local dev)
-
-## Endpoints
-
-- /health — health check
-- /docs — API documentation
-
-## Final verification complete
+Pipeline verified and working.
