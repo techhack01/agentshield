@@ -4,4 +4,8 @@ Runtime security proxy for AI agents.
 
 ## Status
 
-Pipeline fully wired - testing n8n webhook.
+All integrations verified and working.
+
+## Pipeline
+
+Push to main triggers: Lint → Test → Security Scan → Build Docker → Notify n8n
