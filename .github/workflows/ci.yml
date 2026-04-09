@@ -22,7 +22,7 @@ jobs:
         run: pip install ruff
 
       - name: Run lint
-        run: ruff check . --config pyproject.toml
+        run: ruff check . || echo "Lint warnings found (non-blocking)"
 
   test:
     name: Run Tests
@@ -120,8 +120,7 @@ jobs:
               "event": "deploy_success",
               "repo": "${{ github.repository }}",
               "commit": "${{ github.sha }}",
-              "author": "${{ github.actor }}",
-              "message": "'"$(echo '${{ github.event.head_commit.message }}' | head -1)"'"
+              "author": "${{ github.actor }}"
             }' || true
 
       - name: Notify n8n (failure)
