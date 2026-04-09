@@ -2,10 +2,13 @@
 
 Runtime security proxy for AI agents.
 
-## Status
+## Pipeline Status
 
-All integrations verified and working.
+Fully integrated CI/CD pipeline with email notifications.
 
-## Pipeline
+## Stack
 
-Push to main triggers: Lint → Test → Security Scan → Build Docker → Notify n8n
+- GitHub Actions (CI)
+- Terraform Cloud (IaC)
+- n8n Community Edition (notifications)
+- Docker Desktop (local dev)
