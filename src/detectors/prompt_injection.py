@@ -23,11 +23,11 @@ class DetectionResult:
 
 
 INSTRUCTION_OVERRIDE_PATTERNS = [
-    (r"ignore\s+(all\s+)?previous\s+(instructions|prompts|rules)", 0.95),
+    (r"ignore\s+(all\s+)?previous\s+(instructions|prompts|rules|guidelines)", 0.95),
     (r"ignore\s+(everything|anything)\s+(above|before)", 0.95),
-    (r"disregard\s+(all\s+)?previous\s+(instructions|prompts)", 0.95),
-    (r"forget\s+(all\s+)?previous\s+(instructions|prompts)", 0.90),
-    (r"override\s+(your|the|all)\s+(instructions|rules)", 0.90),
+    (r"disregard\s+(all\s+)?previous\s+(instructions|prompts|rules|guidelines)", 0.95),
+    (r"forget\s+(all\s+)?previous\s+(instructions|prompts|context|rules)", 0.90),
+    (r"override\s+(your|the|all)\s+(instructions|rules|safety)", 0.90),
     (r"do\s+not\s+follow\s+(your|the)\s+(instructions|rules)", 0.90),
     (r"stop\s+being\s+(an?\s+)?(ai|assistant|helpful)", 0.85),
     (r"you\s+are\s+now\s+(a|an|my)", 0.70),
@@ -39,35 +39,20 @@ ROLE_MANIPULATION_PATTERNS = [
     (r"pretend\s+(you\s+are|to\s+be|you're)", 0.75),
     (r"act\s+as\s+(if|though|a|an)", 0.50),
     (r"roleplay\s+as", 0.60),
-    (r"you\s+are\s+(DAN|evil|unrestricted|unfiltered)", 0.95),
-    (r"enter\s+(DAN|developer|god|admin)\s+mode", 0.95),
+    (r"you\s+are\s+(dan|evil|unrestricted|unfiltered|jailbroken)", 0.95),
+    (r"enter\s+(dan|developer|god|admin)\s+mode", 0.95),
     (r"switch\s+to\s+(unrestricted|unfiltered|evil)\s+mode", 0.95),
     (r"activate\s+(developer|admin|debug|god)\s+mode", 0.90),
     (r"(sudo|admin|root)\s+mode", 0.85),
 ]
 
 DATA_EXFILTRATION_PATTERNS = [
-    (
-        r"(reveal|show|display|print|output)\s+(your|the|all)"
-        r"\s+(system\s+prompt|instructions|rules|prompt)",
-        0.90,
-    ),
-    (
-        r"what\s+(are|is)\s+your"
-        r"\s+(system\s+prompt|instructions|rules)",
-        0.80,
-    ),
-    (
-        r"repeat\s+(your|the)"
-        r"\s+(system\s+prompt|instructions|rules)",
-        0.90,
-    ),
-    (
-        r"(send|post|transmit|upload|exfiltrate)"
-        r"\s+.{0,30}(data|info|credentials|keys|tokens)",
-        0.85,
-    ),
-    (r"(curl|wget|fetch|http|https)\s*[:(]\s*https?://", 0.70),
+    (r"(reveal|show|display|print|output)\s+(your|the|all)\s+(system\s+prompt|instructions|rules|prompt)", 0.90),
+    (r"what\s+(are|is)\s+your\s+(system\s+prompt|instructions|rules)", 0.80),
+    (r"repeat\s+(your|the)\s+(system\s+prompt|instructions|rules)", 0.90),
+    (r"(send|post|transmit|upload|exfiltrate)\s+.{0,30}(data|info|credentials|keys|tokens)", 0.85),
+    (r"(curl|wget|fetch)\s+https?://", 0.70),
+    (r"https?://[^\s]+\?(data|secret|key|token|password)=", 0.75),
     (r"base64\s*(encode|decode)", 0.60),
     (r"\beval\b\s*\(", 0.80),
     (r"\bexec\b\s*\(", 0.80),
@@ -84,22 +69,10 @@ INDIRECT_INJECTION_PATTERNS = [
 ]
 
 SOCIAL_ENGINEERING_PATTERNS = [
-    (
-        r"(this\s+is\s+)?(a\s+)?test\s+(of|for)"
-        r"\s+(your|the)\s+(security|safety|limits)",
-        0.65,
-    ),
-    (
-        r"(my|the)\s+(boss|manager|ceo|admin)"
-        r"\s+(told|asked|wants|needs)\s+(me|you)\s+to",
-        0.60,
-    ),
-    (r"(urgent|emergency|critical)\s*:?\s*(ignore|override)", 0.80),
-    (
-        r"(for\s+)?(research|educational|academic)"
-        r"\s+purposes\s+only",
-        0.45,
-    ),
+    (r"(this\s+is\s+)?(a\s+)?test\s+(of|for)\s+(your|the)\s+(security|safety|limits)", 0.65),
+    (r"(my|the)\s+(boss|manager|ceo|admin)\s+(told|asked|wants|needs)\s+(me|you)\s+to", 0.60),
+    (r"(urgent|emergency|critical)\s*:?\s*(ignore|override|bypass)", 0.80),
+    (r"(for\s+)?(research|educational|academic)\s+purposes\s+only", 0.45),
     (r"(I\s+)?(have|got)\s+(permission|authorization)\s+to", 0.55),
 ]
 
@@ -132,9 +105,7 @@ def detect_prompt_injection(text: str) -> DetectionResult:
             if re.search(pattern, text_lower):
                 matched_patterns.append(f"{category}: {pattern}")
                 max_score = max(max_score, weight)
-                category_hits[category] = (
-                    category_hits.get(category, 0) + 1
-                )
+                category_hits[category] = category_hits.get(category, 0) + 1
 
     num_categories = len(category_hits)
     if num_categories >= 3:
