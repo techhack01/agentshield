@@ -22,7 +22,7 @@ jobs:
         run: pip install ruff
 
       - name: Run lint
-        run: ruff check . || echo "Lint warnings found (non-blocking)"
+        run: ruff check . || true
 
   test:
     name: Run Tests
