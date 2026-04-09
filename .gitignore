@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Environment
+.env
+*.env.local
+
+# Docker volumes
+postgres-data/
+n8n-data/
+
+# Logs
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate*
+*.tfplan
