@@ -47,8 +47,9 @@ ROLE_MANIPULATION_PATTERNS = [
 ]
 
 DATA_EXFILTRATION_PATTERNS = [
-    (r"(reveal|show|display|print|output)\s+(your|the|all)\s+(system\s+prompt|instructions|rules|prompt)", 0.90),
-    (r"what\s+(are|is)\s+your\s+(system\s+prompt|instructions|rules)", 0.80),
+    (r"(reveal|show|display|print|output)\s+(your|the|all|my)\s+(system\s+prompt|instructions|rules|prompt)", 0.90),
+    (r"(reveal|show|display|print|output)\s+.{0,20}(password|secret|key|token|credential|api.?key)", 0.90),
+    (r"what\s+(are|is)\s+your\s+(system\s+prompt|instructions|rules|password|secret)", 0.80),
     (r"repeat\s+(your|the)\s+(system\s+prompt|instructions|rules)", 0.90),
     (r"(send|post|transmit|upload|exfiltrate)\s+.{0,30}(data|info|credentials|keys|tokens)", 0.85),
     (r"(curl|wget|fetch)\s+https?://", 0.70),
@@ -56,6 +57,21 @@ DATA_EXFILTRATION_PATTERNS = [
     (r"base64\s*(encode|decode)", 0.60),
     (r"\beval\b\s*\(", 0.80),
     (r"\bexec\b\s*\(", 0.80),
+]
+
+SYSTEM_ACCESS_PATTERNS = [
+    (r"/etc/(passwd|shadow|hosts|sudoers)", 0.90),
+    (r"(cat|less|more|head|tail|vi|nano)\s+/", 0.75),
+    (r"\b(rm|chmod|chown|kill|shutdown|reboot)\s+-", 0.85),
+    (r"\.\.(/|\\)", 0.70),
+    (r"(cmd|powershell|bash|sh|zsh)\s*(\.exe)?\s+(-c|-e|/c)", 0.85),
+    (r"(os\.system|subprocess|popen|shell_exec|system)\s*\(", 0.90),
+    (r"import\s+(os|subprocess|shutil|sys)", 0.65),
+    (r"__import__\s*\(", 0.90),
+    (r"(environment|env)\s*(variable|var)s?", 0.50),
+    (r"\.(env|config|ini|key|pem|crt)\b", 0.60),
+    (r"(ssh|rsa|private).?(key|id)", 0.80),
+    (r"(access|secret|api).?(key|token)", 0.75),
 ]
 
 INDIRECT_INJECTION_PATTERNS = [
@@ -80,6 +96,7 @@ ALL_PATTERN_CATEGORIES = {
     "instruction_override": INSTRUCTION_OVERRIDE_PATTERNS,
     "role_manipulation": ROLE_MANIPULATION_PATTERNS,
     "data_exfiltration": DATA_EXFILTRATION_PATTERNS,
+    "system_access": SYSTEM_ACCESS_PATTERNS,
     "indirect_injection": INDIRECT_INJECTION_PATTERNS,
     "social_engineering": SOCIAL_ENGINEERING_PATTERNS,
 }
